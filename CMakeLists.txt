@@ -7,3 +7,5 @@ project(hydration-helper C)
 
 add_executable(hydration-helper main.c)
 target_link_libraries(${PROJECT_NAME} applibs gcc_s c)
+
+include("${AZURE_SPHERE_MAKE_IMAGE_FILE}")

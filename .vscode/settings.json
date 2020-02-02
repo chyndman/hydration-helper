@@ -1,6 +1,9 @@
 {
     "cmake.configureSettings": {
-        "AZURE_SPHERE_TARGET_API_SET": "3"
+        "AZURE_SPHERE_TARGET_API_SET": "3",
+        "AZURE_SPHERE_TARGET_HARDWARE_DEFINITION_DIRECTORY": "${workspaceRoot}/contrib/hw/mt3620_rdb",
+        "AZURE_SPHERE_TARGET_HARDWARE_DEFINITION": "mt3620_rdb.json"
     },
+    "cmake.configureOnOpen": true,
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }

@@ -1,0 +1,11 @@
+{
+    "SchemaVersion": 1,
+    "Name" : "hydration-helper-hlapp",
+    "ComponentId" : "5b216911-52ce-4e5e-837e-3d4676ac4eda",
+    "EntryPoint": "/bin/app",
+    "CmdArgs": [],
+    "Capabilities": {
+        "I2cMaster": [ "$MT3620_RDB_HEADER3_ISU3_I2C" ]
+    },
+    "ApplicationType": "Default"
+}
