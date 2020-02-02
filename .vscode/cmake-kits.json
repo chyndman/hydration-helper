@@ -1,0 +1,6 @@
+[
+    {
+        "name": "Azure Sphere (Windows)",
+        "toolchainFile": "C:\\Program Files (x86)\\Microsoft Azure Sphere SDK\\CMakeFiles\\AzureSphereToolchain.cmake"
+    }
+]

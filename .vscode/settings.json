@@ -1,0 +1,6 @@
+{
+    "cmake.configureSettings": {
+        "AZURE_SPHERE_TARGET_API_SET": "3"
+    },
+    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
+}

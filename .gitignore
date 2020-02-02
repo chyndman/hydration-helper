@@ -1,3 +1,7 @@
+# CMake build
+build/
+
+# \\\ Below is from GitHub defaults for C
 # Prerequisites
 *.d
 
