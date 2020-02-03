@@ -9,6 +9,7 @@ add_executable(
     hydration-helper
     src/main.c
     src/dev/rdb-leds.c
+    src/dev/sparkfun-qwiic-twist.c
 )
 include_directories(src)
 target_link_libraries(${PROJECT_NAME} applibs gcc_s c)
