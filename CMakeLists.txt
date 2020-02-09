@@ -9,6 +9,7 @@ add_executable(
     hydration-helper
     src/main.c
     src/dev/rdb-leds.c
+    src/dev/i2c-if.c
     src/dev/sparkfun-qwiic-twist.c
 )
 include_directories(src)

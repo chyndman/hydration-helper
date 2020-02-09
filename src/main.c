@@ -5,13 +5,14 @@
 #include "dev/rdb-leds.h"
 #include "dev/sparkfun-qwiic-twist.h"
 #include <applibs/log.h>
+#include <hw/mt3620_rdb.h>
 
 int main(void)
 {
     Log_Debug("Hello, world!");
     while (1)
     {
-        int16_t count = devSparkFunQwiicTwistGetCount();
+        int16_t count = devSparkFunQwiicTwistGetCount(MT3620_ISU3_I2C);
         devRdbLedSetColor(RDBLED_USER1, (uint16_t)count & 0x7);
         devRdbLedSetColor(RDBLED_USER2, ((uint16_t)count >> 3) & 0x7);
         devRdbLedSetColor(RDBLED_USER3, ((uint16_t)count >> 6) & 0x7);

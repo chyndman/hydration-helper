@@ -3,26 +3,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 #include "sparkfun-qwiic-twist.h"
-#define I2C_STRUCTS_VERSION 1
-#include <applibs/i2c.h>
-#include <hw/mt3620_rdb.h>
-#include <unistd.h>
+#include "i2c-if.h"
 
-#define QWIIC_TWIST_ADDR 0x3F
+static I2cDevice g_dev = DEF_I2C_DEVICE(0x3F, uint8_t);
+static I2cRegister g_regCount = DEF_I2C_REG(&g_dev, 0x5, int16_t);
+static I2cResource g_resRegCount = DEF_I2C_RES_REG(&g_regCount);
 
-int16_t devSparkFunQwiicTwistGetCount(void)
+int16_t devSparkFunQwiicTwistGetCount(I2C_InterfaceId master)
 {
-    int16_t count = 0;
-
-    int fd = I2CMaster_Open(MT3620_ISU3_I2C);
-
-    if (0 <= fd)
-    {
-        uint8_t reg = 0x5;
-        I2CMaster_WriteThenRead(fd, QWIIC_TWIST_ADDR, &reg, sizeof(reg), (uint8_t*)&count, sizeof(count));
-    }
-
-    close(fd);
-
-    return count;
+    unsigned long val = 0;
+    devI2cIfRead(master, g_resRegCount, &val);
+    return (int16_t)(val);
 }

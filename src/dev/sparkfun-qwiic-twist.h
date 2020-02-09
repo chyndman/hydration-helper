@@ -4,5 +4,6 @@
 
 #pragma once
 #include <stdint.h>
+#include "i2c-if.h"
 
-int16_t devSparkFunQwiicTwistGetCount(void);
+int16_t devSparkFunQwiicTwistGetCount(I2C_InterfaceId master);
