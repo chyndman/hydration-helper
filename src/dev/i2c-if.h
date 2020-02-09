@@ -52,3 +52,4 @@ typedef struct
 #define DEF_I2C_RES_REGFLD(R)       { .resType = I2CRES_REGFLD, .pRegField = R }
 
 int devI2cIfRead(const I2C_InterfaceId master, const I2cResource res, unsigned long* pVal);
+int devI2cIfWrite(const I2C_InterfaceId master, const I2cResource res, unsigned long val);
