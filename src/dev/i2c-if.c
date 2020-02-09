@@ -5,6 +5,7 @@
 #include "i2c-if.h"
 #include <errno.h>
 #include <unistd.h>
+#include <applibs/log.h>
 
 static int devI2cIfActiveMasterAcquire(const I2C_InterfaceId idNew)
 {
@@ -42,6 +43,7 @@ static int devI2cIfReadReg(const int fd, const I2cRegister* pReg, unsigned long*
         bufReg[i] = (pReg->addr >> (i * 8)) & 0xff;
     }
 
+    //Log_Debug("I2CMaster_WriteThenRead (Reg) 0x%08x [%u]\n", pReg->addr, pReg->width);
     ssize_t rv = I2CMaster_WriteThenRead(fd, pDev->addr, bufReg, pDev->regAddrWidth, bufVal, pReg->width);
     if (0 <= rv)
     {
@@ -106,6 +108,7 @@ static int devI2cIfWriteReg(const int fd, const I2cRegister* pReg, unsigned long
         buf[i + pDev->regAddrWidth] = (val >> (i * 8)) & 0xff;
     }
 
+    //Log_Debug("I2CMaster_Write (Reg) 0x%08x <- 0x%08x [%u]\n", pReg->addr, val, pReg->width);
     ssize_t rv = I2CMaster_Write(fd, pDev->addr, buf, pDev->regAddrWidth + pReg->width);
     if (0 <= rv)
     {
