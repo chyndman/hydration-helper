@@ -11,6 +11,7 @@ add_executable(
     src/dev/rdb-leds.c
     src/dev/i2c-if.c
     src/dev/sparkfun-qwiic-twist.c
+    src/dev/sparkfun-qwiic-scale.c
 )
 include_directories(src)
 target_link_libraries(${PROJECT_NAME} applibs gcc_s c)

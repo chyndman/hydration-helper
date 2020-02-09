@@ -4,12 +4,14 @@
 
 #include "dev/rdb-leds.h"
 #include "dev/sparkfun-qwiic-twist.h"
+#include "dev/sparkfun-qwiic-scale.h"
 #include <applibs/log.h>
 #include <hw/mt3620_rdb.h>
 
 int main(void)
 {
     Log_Debug("Hello, world!");
+    devSparkFunQwiicScaleInitialize(MT3620_ISU3_I2C);
     while (1)
     {
         int16_t count = devSparkFunQwiicTwistGetCount(MT3620_ISU3_I2C);
