@@ -18,3 +18,10 @@ typedef enum
     ,LEDST_OFF
     ,LEDST_ON
 } LedState;
+
+typedef enum
+{
+    LEDDEV_NONE
+    ,LEDDEV_SPARKFUN_QWIIC_TWIST
+    ,LEDDEV_RDB
+} LedDevice;

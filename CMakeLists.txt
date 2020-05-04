@@ -12,8 +12,9 @@ add_executable(
     src/dev/i2c-if.c
     src/dev/sparkfun-qwiic-twist.c
     src/dev/sparkfun-qwiic-scale.c
+    src/light-ctrl.c
 )
 include_directories(src)
-target_link_libraries(${PROJECT_NAME} applibs gcc_s c)
+target_link_libraries(${PROJECT_NAME} applibs gcc_s pthread c)
 
 include("${AZURE_SPHERE_MAKE_IMAGE_FILE}")
