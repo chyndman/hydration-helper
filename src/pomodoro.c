@@ -33,8 +33,10 @@ static void doPomState(const unsigned minutes, const LedChannel color)
     lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_SOLID);
     sleep(5);
     lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID);
-    sleep((minutes * 60) - 5);
+    sleep((minutes * 60) - 35);
     lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_BLINK_SLOW);
+    sleep(30);
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_STROBE);
 }
 
 static void* thdPomStateWork(void* pData)

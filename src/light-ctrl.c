@@ -9,6 +9,8 @@
 #include "dev/rdb-leds.h"
 #include "dev/sparkfun-qwiic-twist.h"
 
+#define NS_PER_MS 1000000
+
 static void thdDo(void* (*pFun)(void*), void* pData)
 {
     static pthread_t thd;
@@ -66,6 +68,31 @@ static void* thdBlinkSlow(void* pData)
     return NULL;
 }
 
+static void* thdStrobe(void* pData)
+{
+    struct timespec tOn =
+    {
+        0,
+        25 * NS_PER_MS
+    };
+
+    struct timespec tOff =
+    {
+        0,
+        (500 * NS_PER_MS) - (tOn.tv_nsec)
+    };
+
+    while (1)
+    {
+        ledUpdate(g_blinkContext.dev, g_blinkContext.led, g_blinkContext.color);
+        nanosleep(&tOn, NULL);
+        ledUpdate(g_blinkContext.dev, g_blinkContext.led, 0);
+        nanosleep(&tOff, NULL);
+    }
+
+    return NULL;
+}
+
 void lightCtrlSet(const LedDevice dev, const int led, const LedChannel color, const LightPattern pat)
 {
     switch (pat)
@@ -80,6 +107,11 @@ void lightCtrlSet(const LedDevice dev, const int led, const LedChannel color, co
             g_blinkContext.color = color;
             thdDo(thdBlinkSlow, NULL);
             break;
+        case LPAT_STROBE:
+            g_blinkContext.dev = dev;
+            g_blinkContext.led = led;
+            g_blinkContext.color = color;
+            thdDo(thdStrobe, NULL);
         default:
             break;
     }
