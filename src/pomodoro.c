@@ -30,13 +30,13 @@ static void thdDo(void* (*pFun)(void*), void* pData)
 
 static void doPomState(const unsigned minutes, const LedChannel color)
 {
-    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_SOLID);
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_SOLID, 0);
     sleep(5);
-    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID);
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID, 0);
     sleep((minutes * 60) - 35);
-    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_BLINK_SLOW);
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_BLINK_SLOW, 0);
     sleep(30);
-    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_STROBE);
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_STROBE, 0);
 }
 
 static void* thdPomStateWork(void* pData)
@@ -51,45 +51,61 @@ static void* thdPomStateBreak(void* pData)
     return NULL;
 }
 
-static void* thdDoPomStateNone(void* pData)
+static void* thdPomStateGame(void* pData)
 {
-    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, LEDCH_RED, LPAT_SOLID);
+    unsigned long quanta = 0;
+    const unsigned quantaLenMinutes = 5;
+    const LedChannel color = LEDCH_RED | LEDCH_GREEN;
+
+    while (1)
+    {
+        lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_SOLID, 0);
+        sleep(5);
+        lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID, 0);
+        sleep(1);
+        if (0 != quanta++)
+        {
+            lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_STROBE, quanta);
+        }
+        sleep((60 * quantaLenMinutes) - 6);
+    }
+
+    return NULL;
+}
+
+static void* thdPomStateNone(void* pData)
+{
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, LEDCH_RED, LPAT_SOLID, 0);
     sleep(5);
-    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID);
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID, 0);
     return NULL;
 }
 
 void pomodoroMain(void)
 {
-    PomodoroState states[] =
+    struct
     {
-        POMST_WORK,
-        POMST_BREAK,
-        POMST_NONE,
+        PomodoroState state;
+        void* (*pThdFunc)(void*);
+    } map[] =
+    {
+        { POMST_NONE, &thdPomStateNone },
+        { POMST_WORK, &thdPomStateWork },
+        { POMST_BREAK, &thdPomStateBreak },
+        { POMST_GAME, &thdPomStateGame },
     };
-    const unsigned numStates = sizeof(states) / sizeof(states[0]);
-    int16_t prevCount = 0;
+
+    lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, LEDCH_RED | LEDCH_GREEN | LEDCH_BLUE, LPAT_BLINK_SLOW, 0);
+
+    int16_t prevCount = devSparkFunQwiicTwistGetCount(MT3620_ISU3_I2C);
     while (1)
     {
         int16_t count = devSparkFunQwiicTwistGetCount(MT3620_ISU3_I2C);
         if (count != prevCount)
         {
             prevCount = count;
-            const PomodoroState state = states[count % numStates];
-            switch (state)
-            {
-                case POMST_WORK:
-                    thdDo(thdPomStateWork, NULL);
-                    break;
-                case POMST_BREAK:
-                    thdDo(thdPomStateBreak, NULL);
-                    break;
-                case POMST_NONE:
-                    thdDo(thdDoPomStateNone, NULL);
-                    break;
-                default:
-                    break;
-            }
+            const unsigned i = count % (sizeof(map) / sizeof(map[0]));
+            thdDo(map[i].pThdFunc, NULL);
         }
     }
 }

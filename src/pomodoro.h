@@ -14,6 +14,7 @@ typedef enum
     POMST_NONE
     ,POMST_WORK
     ,POMST_BREAK
+    ,POMST_GAME
 } PomodoroState;
 
 void pomodoroMain(void);

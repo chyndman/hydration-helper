@@ -51,13 +51,16 @@ static struct
 
 static void* thdBlinkSlow(void* pData)
 {
+    unsigned count = (unsigned)pData;
+    int infinite = (count == 0 ? 1 : 0);
+
     struct timespec t =
     {
         1,
         0
     };
 
-    while (1)
+    while (infinite || 0 < --count)
     {
         ledUpdate(g_blinkContext.dev, g_blinkContext.led, g_blinkContext.color);
         nanosleep(&t, NULL);
@@ -70,10 +73,13 @@ static void* thdBlinkSlow(void* pData)
 
 static void* thdStrobe(void* pData)
 {
+    unsigned count = (unsigned)pData;
+    int infinite = (count == 0 ? 1 : 0);
+
     struct timespec tOn =
     {
         0,
-        25 * NS_PER_MS
+        40 * NS_PER_MS
     };
 
     struct timespec tOff =
@@ -82,7 +88,7 @@ static void* thdStrobe(void* pData)
         (500 * NS_PER_MS) - (tOn.tv_nsec)
     };
 
-    while (1)
+    while (infinite || 0 < --count)
     {
         ledUpdate(g_blinkContext.dev, g_blinkContext.led, g_blinkContext.color);
         nanosleep(&tOn, NULL);
@@ -93,7 +99,7 @@ static void* thdStrobe(void* pData)
     return NULL;
 }
 
-void lightCtrlSet(const LedDevice dev, const int led, const LedChannel color, const LightPattern pat)
+void lightCtrlSet(const LedDevice dev, const int led, const LedChannel color, const LightPattern pat, const unsigned count)
 {
     switch (pat)
     {
@@ -105,13 +111,13 @@ void lightCtrlSet(const LedDevice dev, const int led, const LedChannel color, co
             g_blinkContext.dev = dev;
             g_blinkContext.led = led;
             g_blinkContext.color = color;
-            thdDo(thdBlinkSlow, NULL);
+            thdDo(thdBlinkSlow, (void*)count);
             break;
         case LPAT_STROBE:
             g_blinkContext.dev = dev;
             g_blinkContext.led = led;
             g_blinkContext.color = color;
-            thdDo(thdStrobe, NULL);
+            thdDo(thdStrobe, (void*)count);
         default:
             break;
     }
