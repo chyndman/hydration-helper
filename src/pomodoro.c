@@ -63,10 +63,7 @@ static void* thdPomStateGame(void* pData)
         sleep(5);
         lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, 0, LPAT_SOLID, 0);
         sleep(1);
-        if (0 != quanta++)
-        {
-            lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_STROBE, quanta);
-        }
+        lightCtrlSet(LEDDEV_SPARKFUN_QWIIC_TWIST, MT3620_ISU3_I2C, color, LPAT_STROBE, ++quanta);
         sleep((60 * quantaLenMinutes) - 6);
     }
 
