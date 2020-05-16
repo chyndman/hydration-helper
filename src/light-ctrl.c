@@ -60,7 +60,7 @@ static void* thdBlinkSlow(void* pData)
         0
     };
 
-    while (infinite || 0 < --count)
+    while (infinite || 0 < count--)
     {
         ledUpdate(g_blinkContext.dev, g_blinkContext.led, g_blinkContext.color);
         nanosleep(&t, NULL);
@@ -88,7 +88,7 @@ static void* thdStrobe(void* pData)
         (500 * NS_PER_MS) - (tOn.tv_nsec)
     };
 
-    while (infinite || 0 < --count)
+    while (infinite || 0 < count--)
     {
         ledUpdate(g_blinkContext.dev, g_blinkContext.led, g_blinkContext.color);
         nanosleep(&tOn, NULL);
